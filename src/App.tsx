@@ -58,7 +58,8 @@ function App() {
       const axiosError = error as AxiosError<ApiErrorResponse>;
 
       if (axiosError.response) {
-        setError(axiosError.response.data.error);
+        setError(`${axiosError.response.data.error} for search "${search_term.current}"`);
+        search_term.current = '';
       } else {
         setError(axiosError.message);
       }
