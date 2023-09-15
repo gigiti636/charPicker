@@ -13,8 +13,8 @@ type Character = {
 type ApiResponse = { results: Character[]; info: { pages: number } };
 type ApiErrorResponse = { error: string };
 
-const firstPage = 1;
-const lastPage = 42;
+//const firstPage = 1;
+//const lastPage = 42;
 
 //intro - show api
 //https://rickandmortyapi.com/documentation/#get-all-characters
@@ -23,6 +23,8 @@ const lastPage = 42;
 //make it responsive
 
 //next and previous button for page select
+
+//find a way to make it more bug safe the slider maybe abort previous request
 
 //improvements
 //make prettier
@@ -77,12 +79,36 @@ function App() {
     }
   };
 
+  const handlePrev = () => {
+    if (page) {
+      setPage(page - 1);
+    }
+  };
+
+  const handleNext = () => {
+    if (page) {
+      setPage(page + 1);
+    }
+  };
+
   return (
     <div className="App">
       <header>
         <div>num of pages {endPage.current}</div>
         <div style={{ color: 'red' }}>{error}</div>
-        <div>{!page ? 'Pick a Page' : `At Page ${page}`}</div>
+        <div>
+          {page && (
+            <button onClick={handlePrev} disabled={page === startPage.current}>
+              Prev
+            </button>
+          )}
+          <span>{!page ? 'Pick a Page' : `At Page ${page}`}</span>
+          {page && (
+            <button onClick={handleNext} disabled={page === endPage.current}>
+              Next
+            </button>
+          )}
+        </div>
         <input
           value={page ? page : ''}
           type={'range'}
@@ -99,15 +125,23 @@ function App() {
           }
           onKeyDown={handleKeyDown}
         />
+        <button
+          onClick={() => {
+            setPage(1);
+            fetchChars();
+          }}
+        >
+          Go
+        </button>
       </header>
       <main className={'card-wrapper'}>
         {chars.map((char) => (
           <div className="card" key={char.id}>
             <img src={char.image} alt="Avatar" style={{ width: '100%' }} />
             <div className="container">
-              <h4>
+              <div>
                 <b>{char.name}</b>
-              </h4>
+              </div>
             </div>
           </div>
         ))}
