@@ -14,13 +14,7 @@ const lastPage = 42;
 function App() {
   const [page, setPage] = useState<null | number>(null);
   const [chars, setChars] = useState<Character[] | null>(null);
-  //display the page we are at
-  //we can add also arrows for next and previous page
-  //we can add also a search bar , //we will then have to set pages too because their number changes after search
 
-  //show a loader while fetching
-  // we can add a try catch here and handle the error
-  //abort previous request when one is happening or prevent it by loading
   const fetchChars = async () => {
     if (page) {
       const response: AxiosResponse<{ results: Character[] }> = await axios.get(
@@ -34,22 +28,12 @@ function App() {
 
   useEffect(() => {
     fetchChars();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
-  //this is an extra point
-  const render_chars = useDeferredValue(chars);
-
-  //css improvements
-  //responsive design
-
-  //extra point to making the card a component for re-usability
-
-  //extra point for building a modal for when clicking on a card to show more information
   return (
     <div className="App">
       <header>
-        <div>Pick a Page</div>
+        <div>{!page ? 'Pick a Page' : `At Page ${page}`}</div>
         <input
           value={page ? page : ''}
           type={'range'}
@@ -61,8 +45,8 @@ function App() {
         />
       </header>
       <main className={'card-wrapper'}>
-        {render_chars &&
-          render_chars.map((char) => (
+        {chars &&
+          chars.map((char) => (
             <div className="card" key={char.id}>
               <img src={char.image} alt="Avatar" style={{ width: '100%' }} />
               <div className="container">
