@@ -9,7 +9,7 @@ type Character = {
 };
 
 const firstPage = 1;
-const lastPage = 40;
+const lastPage = 42;
 
 function App() {
   const [page, setPage] = useState<null | number>(null);
