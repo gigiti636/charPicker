@@ -35,7 +35,7 @@ type ApiErrorResponse = { error: string };
 //extra implement a searchbar;
 
 function App() {
-  const [page, setPage] = useState<number | null>(null);
+  const [page, setPage] = useState<number>(1);
   const [chars, setChars] = useState<Character[]>([]);
   const [error, setError] = useState('');
 
