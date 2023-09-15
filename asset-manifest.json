@@ -1,11 +1,11 @@
 {
   "files": {
-    "main.css": "/charPicker/static/css/main.ecfb9456.css",
-    "main.js": "/charPicker/static/js/main.84066d8f.js",
+    "main.css": "/charPicker/static/css/main.cca1ca05.css",
+    "main.js": "/charPicker/static/js/main.0f1b247d.js",
     "index.html": "/charPicker/index.html"
   },
   "entrypoints": [
-    "static/css/main.ecfb9456.css",
-    "static/js/main.84066d8f.js"
+    "static/css/main.cca1ca05.css",
+    "static/js/main.0f1b247d.js"
   ]
 }
