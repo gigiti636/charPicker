@@ -1,4 +1,4 @@
-import { useEffect, useState, useDeferredValue } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import axios, { AxiosResponse } from 'axios';
 
