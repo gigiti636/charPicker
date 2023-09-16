@@ -43,13 +43,28 @@ function App() {
   const startPage = useRef(1);
   const endPage = useRef(42);
 
+  let cancelController = useRef<AbortController | null>(null);
   const fetchChars = async () => {
     try {
+      if (cancelController.current) {
+        cancelController.current.abort();
+      }
+
+      cancelController.current = new AbortController();
+      const { signal } = cancelController.current;
       if (page) {
         const response: AxiosResponse<ApiResponse> = await axios.get(
           `https://rickandmortyapi.com/api/character/?page=${page}`,
-          { params: { name: search_term.current } }
+          {
+            params: { name: search_term.current },
+            headers: {
+              'Cache-Control': 'max-age=3600',
+            },
+            signal,
+          }
         );
+
+        cancelController.current = null;
 
         endPage.current = response.data.info.pages;
         const charToRender = response?.data?.results ?? [];
@@ -57,13 +72,15 @@ function App() {
         setChars(charToRender);
       }
     } catch (error) {
-      const axiosError = error as AxiosError<ApiErrorResponse>;
+      if (!axios.isCancel(error)) {
+        const axiosError = error as AxiosError<ApiErrorResponse>;
 
-      if (axiosError.response) {
-        setError(`${axiosError.response.data.error} for search "${search_term.current}"`);
-        search_term.current = '';
-      } else {
-        setError(axiosError.message);
+        if (axiosError.response) {
+          setError(`${axiosError.response.data.error} for search "${search_term.current}"`);
+          search_term.current = '';
+        } else {
+          setError(axiosError.message);
+        }
       }
     }
   };
@@ -94,45 +111,55 @@ function App() {
   return (
     <div className="App">
       <header>
-        <div>num of pages {endPage.current}</div>
         <div style={{ color: 'red' }}>{error}</div>
-        <div>
+        <div className={'btn-wrapper'}>
           {page && (
-            <button onClick={handlePrev} disabled={page === startPage.current}>
+            <button
+              className={'act-btn'}
+              onClick={handlePrev}
+              disabled={page === startPage.current}
+            >
               Prev
             </button>
           )}
-          <span>{!page ? 'Pick a Page' : `At Page ${page}`}</span>
+          <span style={{ marginLeft: '10px', marginRight: '10px' }}>
+            {page} of {endPage.current}
+          </span>
           {page && (
-            <button onClick={handleNext} disabled={page === endPage.current}>
+            <button className={'act-btn'} onClick={handleNext} disabled={page === endPage.current}>
               Next
             </button>
           )}
         </div>
-        <input
-          value={page ? page : ''}
-          type={'range'}
-          min={startPage.current}
-          max={endPage.current}
-          step={1}
-          style={{ width: '600px' }}
-          onChange={(event: ChangeEvent<HTMLInputElement>) => setPage(Number(event.target.value))}
-        />
-        <input
-          type={'text'}
-          onChange={(event: ChangeEvent<HTMLInputElement>) =>
-            (search_term.current = event.target.value)
-          }
-          onKeyDown={handleKeyDown}
-        />
-        <button
-          onClick={() => {
-            setPage(1);
-            fetchChars();
-          }}
-        >
-          Go
-        </button>
+        <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'center' }}>
+          <input
+            value={page ? page : ''}
+            type={'range'}
+            min={startPage.current}
+            max={endPage.current}
+            step={1}
+            style={{ width: '600px' }}
+            onChange={(event: ChangeEvent<HTMLInputElement>) => setPage(Number(event.target.value))}
+          />
+          <div>
+            <input
+              style={{ opacity: search_term.current === '' ? 0.8 : 1, marginLeft: '10px' }}
+              type={'text'}
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                (search_term.current = event.target.value)
+              }
+              onKeyDown={handleKeyDown}
+            />
+            <button
+              onClick={() => {
+                setPage(1);
+                fetchChars();
+              }}
+            >
+              Go
+            </button>
+          </div>
+        </div>
       </header>
       <main className={'card-wrapper'}>
         {chars.map((char) => (
