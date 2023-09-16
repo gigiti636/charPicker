@@ -111,6 +111,7 @@ function App() {
   return (
     <div className="App">
       <header>
+        <h3 style={{ marginTop: 0, marginBottom: '10px' }}>All Rick And Morty Characters</h3>
         <div style={{ color: 'red' }}>{error}</div>
         <div className={'btn-wrapper'}>
           {page && (
@@ -123,7 +124,7 @@ function App() {
             </button>
           )}
           <span style={{ marginLeft: '10px', marginRight: '10px' }}>
-            {page} of {endPage.current}
+            {page} <small>of</small> {endPage.current} <small>pages</small>
           </span>
           {page && (
             <button className={'act-btn'} onClick={handleNext} disabled={page === endPage.current}>
