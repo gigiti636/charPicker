@@ -1,7 +1,7 @@
-import { useEffect, useState, useRef, KeyboardEvent } from 'react';
-import type { ChangeEvent } from 'react';
-import axios, { AxiosError } from 'axios';
-import type { AxiosResponse } from 'axios';
+import { useEffect, useState, useRef } from 'react';
+import type { ChangeEvent, KeyboardEvent } from 'react';
+import axios from 'axios';
+import type { AxiosResponse, AxiosError } from 'axios';
 import './App.css';
 
 type Character = {
@@ -12,27 +12,6 @@ type Character = {
 
 type ApiResponse = { results: Character[]; info: { pages: number } };
 type ApiErrorResponse = { error: string };
-
-//const firstPage = 1;
-//const lastPage = 42;
-
-//intro - show api
-//https://rickandmortyapi.com/documentation/#get-all-characters
-
-//Make a card component
-//make it responsive
-
-//next and previous button for page select
-
-//find a way to make it more bug safe the slider maybe abort previous request
-
-//improvements
-//make prettier
-//the fetching with try catch
-//loader
-//error handling
-
-//extra implement a searchbar;
 
 function App() {
   const [page, setPage] = useState<number>(1);
@@ -96,71 +75,67 @@ function App() {
     }
   };
 
-  const handlePrev = () => {
-    if (page) {
-      setPage(page - 1);
-    }
-  };
-
-  const handleNext = () => {
-    if (page) {
-      setPage(page + 1);
-    }
-  };
-
   return (
     <div className="App">
       <header>
-        <h3 style={{ marginTop: 0, marginBottom: '10px' }}>All Rick And Morty Characters</h3>
+        <h4 style={{ marginTop: 0, marginBottom: '10px' }}>All Rick And Morty Characters</h4>
         <div style={{ color: 'red' }}>{error}</div>
         <div className={'btn-wrapper'}>
-          {page && (
-            <button
-              className={'act-btn'}
-              onClick={handlePrev}
-              disabled={page === startPage.current}
-            >
-              Prev
-            </button>
-          )}
-          <span style={{ marginLeft: '10px', marginRight: '10px' }}>
-            {page} <small>of</small> {endPage.current} <small>pages</small>
-          </span>
-          {page && (
-            <button className={'act-btn'} onClick={handleNext} disabled={page === endPage.current}>
-              Next
-            </button>
-          )}
-        </div>
-        <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'center' }}>
-          <input
-            value={page ? page : ''}
-            type={'range'}
-            min={startPage.current}
-            max={endPage.current}
-            step={1}
-            style={{ width: '600px' }}
-            onChange={(event: ChangeEvent<HTMLInputElement>) => setPage(Number(event.target.value))}
-          />
+          <button
+            className={'act-btn'}
+            onClick={() => setPage(page - 1)}
+            disabled={page === startPage.current}
+          >
+            Prev
+          </button>
           <div>
-            <input
-              style={{ opacity: search_term.current === '' ? 0.8 : 1, marginLeft: '10px' }}
-              type={'text'}
-              onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                (search_term.current = event.target.value)
-              }
-              onKeyDown={handleKeyDown}
-            />
-            <button
-              onClick={() => {
-                setPage(1);
-                fetchChars();
-              }}
-            >
-              Go
-            </button>
+            <div style={{ marginLeft: '20px', marginRight: '20px' }}>
+              <span>
+                {page} <small>of</small> {endPage.current} <small>pages</small>
+              </span>
+              <span>
+                <input
+                  placeholder={'Search '}
+                  style={{ opacity: search_term.current === '' ? 0.8 : 1, marginLeft: '10px' }}
+                  type={'text'}
+                  onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                    (search_term.current = event.target.value)
+                  }
+                  onKeyDown={handleKeyDown}
+                />
+                <button
+                  onClick={() => {
+                    setPage(1);
+                    fetchChars();
+                  }}
+                >
+                  Go
+                </button>
+              </span>
+            </div>
+            <div>
+              <input
+                value={page ? page : ''}
+                type={'range'}
+                min={startPage.current}
+                max={endPage.current}
+                step={1}
+                style={{ width: '90%' }}
+                onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                  setPage(Number(event.target.value))
+                }
+              />
+            </div>
           </div>
+          <button
+            className={'act-btn'}
+            onClick={() => setPage(page + 1)}
+            disabled={page === endPage.current}
+          >
+            Next
+          </button>
         </div>
+        <div style={{ display: 'flex', alignItems: 'end', justifyContent: 'center' }}></div>
       </header>
       <main className={'card-wrapper'}>
         {chars.map((char) => (

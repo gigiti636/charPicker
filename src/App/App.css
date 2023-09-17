@@ -14,7 +14,6 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 0px;
 }
 
 .act-btn{
@@ -29,6 +28,13 @@
 .act-btn:hover{
   background: lightslategrey;
 }
+.act-btn:active {
+  background: #9ab0c5;
+}
+.act-btn:disabled {
+ pointer-events: none;
+  opacity: 0.5;
+}
 
 .card-wrapper {
   display: flex;
@@ -40,7 +46,7 @@
   /* Add shadows to create the "card" effect */
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
   transition: 0.3s;
-  max-width: 220px;
+  max-width: 190px;
   margin: 8px;
   aspect-ratio: 1;
   cursor:pointer;
